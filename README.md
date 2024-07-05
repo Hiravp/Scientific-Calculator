@@ -27,4 +27,4 @@ cos(16)
 
 you will see this equation shown below
 
- ![ ](docs/Images/scientific_calc_example.png)
+ ![ ](Docs/Images/scientific_calc_example.png)
