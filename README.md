@@ -27,4 +27,4 @@ cos(16)
 
 you will see this equation shown below
 
- ![ ](docs/images/graphexample.png)
+ ![ ](docs/images/Example2.png)
