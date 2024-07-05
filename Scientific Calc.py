@@ -51,13 +51,13 @@ class ScientificCalculator:
 
         # Fifth row
         self.create_button(buttons_frame, "C", 5, 0, self.clear_button)
-        self.create_button(buttons_frame, "sin", 5, 1)
-        self.create_button(buttons_frame, "cos", 5, 2)
-        self.create_button(buttons_frame, "tan", 5, 3)
+        self.create_button(buttons_frame, "sin", 5, 1, lambda: self.append_function("sin("))
+        self.create_button(buttons_frame, "cos", 5, 2, lambda: self.append_function("cos("))
+        self.create_button(buttons_frame, "tan", 5, 3, lambda: self.append_function("tan("))
 
         # Sixth row
-        self.create_button(buttons_frame, "log", 6, 0)
-        self.create_button(buttons_frame, "sqrt", 6, 1)
+        self.create_button(buttons_frame, "log", 6, 0, lambda: self.append_function("log10("))
+        self.create_button(buttons_frame, "sqrt", 6, 1, lambda: self.append_function("sqrt("))
         self.create_button(buttons_frame, "(", 6, 2)
         self.create_button(buttons_frame, ")", 6, 3)
 
@@ -68,21 +68,40 @@ class ScientificCalculator:
         button.grid(row=row, column=col, padx=1, pady=1)
 
     def button_click(self, item):
-        self.expression = self.expression + str(item)
+        self.expression += str(item)
         self.input_text.set(self.expression)
 
     def clear_button(self):
         self.expression = ""
         self.input_text.set("")
 
+    def append_function(self, func):
+        self.expression += func
+        self.input_text.set(self.expression)
+
     def equal_button(self):
         try:
-            result = str(eval(self.expression))
+            # Evaluate the expression safely
+            result = self.evaluate_expression(self.expression)
             self.input_text.set(result)
             self.expression = result
         except Exception as e:
             messagebox.showerror("Error", "Invalid Input")
             self.expression = ""
+
+    def evaluate_expression(self, expression):
+        # Safely evaluate the mathematical expression
+        # Support functions: sin, cos, tan, log10, sqrt, radians, etc.
+        allowed_names = {"sin": math.sin, "cos": math.cos, "tan": math.tan,
+                         "log10": math.log10, "sqrt": math.sqrt, "radians": math.radians}
+
+        code = compile(expression, "<string>", "eval")
+
+        for name in code.co_names:
+            if name not in allowed_names:
+                raise NameError(f"Use of {name} is not allowed")
+
+        return eval(code, {"__builtins__": {}}, allowed_names)
 
 if __name__ == "__main__":
     root = tk.Tk()
